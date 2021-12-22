@@ -31,7 +31,9 @@ namespace OBD.NET.ConsoleClient
                 dev.SubscribeDataReceived<IOBDData>((sender, data) => Console.WriteLine($"PID {data.Data.PID.ToHexString()}: {data.Data}"));
 
                 dev.Initialize();
+                dev.RequestData("1E2C");
                 dev.RequestData<FuelType>();
+
                 for (int i = 0; i < 5; i++)
                 {
                     dev.RequestData<EngineRPM>();

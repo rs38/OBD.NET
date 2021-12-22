@@ -23,7 +23,7 @@ namespace OBD.NET.Common.Devices
         protected static Dictionary<Type, byte> PidCache { get; } = new Dictionary<Type, byte>();
         protected static Dictionary<byte, Type> DataTypeCache { get; } = new Dictionary<byte, Type>();
 
-        protected Mode Mode { get; set; } = Mode.ShowCurrentData; //TODO DarthAffe 26.06.2016: Implement different modes
+         Mode Mode { get; set; } = Mode.ShowCurrentData; 
 
         protected string MessageChunk { get; set; }
 
@@ -111,6 +111,12 @@ namespace OBD.NET.Common.Devices
 
             byte pid = ResolvePid<T>();
             RequestData(pid);
+        }
+
+        public virtual void RequestData(string command)
+        {
+            Logger?.WriteLine("Requesting Type generic String ", OBDLogLevel.Debug);
+            SendCommand(((byte)Mode.ReadByIdent).ToString("X2") + command);
         }
 
         /// <summary>

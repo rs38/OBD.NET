@@ -5,7 +5,7 @@
         #region Commands
         // ReSharper disable InconsistentNaming
 
-        //TODO DarthAffe 26.06.2016: Implement all commands
+       
 
         public static readonly ATCommand RepeatLastCommand = new ATCommand("\r");
         public static readonly ATCommand ResetDevice = new ATCommand("ATZ");

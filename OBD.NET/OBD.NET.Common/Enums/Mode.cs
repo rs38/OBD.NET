@@ -14,6 +14,7 @@
         ShowPendingDiagnosticTroubleCodes = 0x07,
         ControlOperationOfOnboardComponent = 0x08,
         RequestVehicleInformation = 0x09,
-        PermanentDiagnosticTroubleCodes = 0x0A
+        PermanentDiagnosticTroubleCodes = 0x0A,
+        ReadByIdent = 0x22
     }
 }
