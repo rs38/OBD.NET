@@ -5,13 +5,13 @@
     /// </summary>
     public class QueuedCommand
     {
-        #region Properties & Fields
+      
 
         public string CommandText { get; private set; }
 
         public CommandResult CommandResult { get; }
 
-        #endregion
+   
 
         #region Constructors
 

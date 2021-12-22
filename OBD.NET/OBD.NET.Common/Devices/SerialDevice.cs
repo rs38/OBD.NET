@@ -170,7 +170,7 @@ namespace OBD.NET.Common.Devices
             _lineBuffer.Clear();
 
             if (string.IsNullOrWhiteSpace(line)) return;
-            Logger?.WriteLine("Response: '" + line + "'", OBDLogLevel.Verbose);
+            Logger?.WriteLine(line, OBDLogLevel.Data);
 
             InternalProcessMessage(line);
         }

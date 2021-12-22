@@ -51,13 +51,13 @@ namespace OBD.NET.Common.Devices
         public override async Task InitializeAsync()
         {
             await base.InitializeAsync();
-            InternalInitialize();
+           // InternalInitialize();
         }
 
         public override void Initialize()
         {
             base.Initialize();
-            InternalInitialize();
+          //  InternalInitialize();
         }
 
         private void InternalInitialize()
@@ -100,6 +100,8 @@ namespace OBD.NET.Common.Devices
         /// <param name="command">The command.</param>
         public virtual void SendCommand(ATCommand command) => SendCommand(command.Command);
 
+        public virtual void SendATCommand(string hex) => SendCommand(hex);
+
         /// <summary>
         /// Requests the data and calls the handler
         /// </summary>
@@ -119,21 +121,14 @@ namespace OBD.NET.Common.Devices
             SendCommand(((byte)Mode.ReadByIdent).ToString("X2") + command);
         }
 
-        /// <summary>
-        /// Request data based on a pid
-        /// </summary>
-        /// <param name="pid">The pid of the requested data</param>
+     
         public virtual void RequestData(byte pid)
         {
             Logger?.WriteLine("Requesting PID " + pid.ToString("X2") + " ...", OBDLogLevel.Debug);
             SendCommand(((byte)Mode).ToString("X2") + pid.ToString("X2"));
         }
 
-        /// <summary>
-        /// Requests the data asynchronous and return the data when available
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
+
         public virtual async Task<T> RequestDataAsync<T>()
             where T : class, IOBDData, new()
         {
@@ -142,11 +137,7 @@ namespace OBD.NET.Common.Devices
             return await RequestDataAsync(pid) as T;
         }
 
-        /// <summary>
-        /// Requests the data asynchronous and return the data when available
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <returns></returns>
+
         public virtual async Task<IOBDData> RequestDataAsync(Type type)
         {
             Logger?.WriteLine("Requesting Type " + type.Name + " ...", OBDLogLevel.Debug);
@@ -162,6 +153,15 @@ namespace OBD.NET.Common.Devices
         {
             Logger?.WriteLine("Requesting PID " + pid.ToString("X2") + " ...", OBDLogLevel.Debug);
             CommandResult result = SendCommand(((byte)Mode).ToString("X2") + pid.ToString("X2"));
+
+            await result.WaitHandle.WaitAsync();
+            return result.Result;
+        }
+
+        public virtual async Task<object> RequestDataAsync(string serviceID)
+        {
+            Logger?.WriteLine("ReadbyID " + serviceID + " ...", OBDLogLevel.Debug);
+            CommandResult result = SendCommand(((byte)Mode.ReadByIdent).ToString("X2") + serviceID);
 
             await result.WaitHandle.WaitAsync();
             return result.Result;

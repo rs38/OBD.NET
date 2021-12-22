@@ -10,7 +10,7 @@ namespace OBD.NET.Desktop.Communication
 {
     public class SerialConnection : ISerialConnection
     {
-        #region Properties & Fields
+       
 
         private readonly EnhancedSerialPort _serialPort;
         private readonly int _timeout;
@@ -23,15 +23,12 @@ namespace OBD.NET.Desktop.Communication
 
         private readonly AutoResetEvent _hasPrompt = new AutoResetEvent(true);
 
-        #endregion
-
-        #region Events
+      
 
         public event EventHandler<DataReceivedEventArgs> DataReceived;
 
-        #endregion
-
-        #region Constructors
+        
+    
 
         public SerialConnection(string port, int baudRate = 38400, Parity parity = Parity.None, StopBits stopBits = StopBits.One,
             Handshake handshake = Handshake.None, int timeout = 5000)
@@ -49,9 +46,8 @@ namespace OBD.NET.Desktop.Communication
             _serialPort.DataReceived += SerialPortOnDataReceived;
         }
 
-        #endregion
 
-        #region Methods
+    
 
         public void Connect() => _serialPort.Open();
 
@@ -69,6 +65,6 @@ namespace OBD.NET.Desktop.Communication
 
         public void Write(byte[] data) => _serialPort.Write(data, 0, data.Length);
 
-        #endregion
+     
     }
 }

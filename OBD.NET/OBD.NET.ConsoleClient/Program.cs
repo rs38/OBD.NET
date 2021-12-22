@@ -12,36 +12,50 @@ namespace OBD.NET.ConsoleClient
 {
     public class Program
     {
-        public static void Main(string[] args)
-        {
-            if (args.Length < 1)
-            {
-                Console.WriteLine("Parameter ComPort needed.");
-                return;
-            }
+        
 
-            string comPort = args[0];
+        public static async Task MainOld(string[] args)
+        {
+            string comPort = "COM6";
 
             using (SerialConnection connection = new SerialConnection(comPort))
-            using (ELM327 dev = new ELM327(connection, new OBDConsoleLogger(OBDLogLevel.Debug)))
-            {
-                dev.SubscribeDataReceived<EngineRPM>((sender, data) => Console.WriteLine("EngineRPM: " + data.Data.Rpm));
-                dev.SubscribeDataReceived<VehicleSpeed>((sender, data) => Console.WriteLine("VehicleSpeed: " + data.Data.Speed));
 
-                dev.SubscribeDataReceived<IOBDData>((sender, data) => Console.WriteLine($"PID {data.Data.PID.ToHexString()}: {data.Data}"));
+               
+
+            using (ELM327 dev = new ELM327(connection, new OBDConsoleLogger(OBDLogLevel.Data)))
+            {
+                //dev.SubscribeDataReceived<EngineRPM>((sender, data) => Console.WriteLine("EngineRPM: " + data.Data.Rpm));
+                //dev.SubscribeDataReceived<VehicleSpeed>((sender, data) => Console.WriteLine("VehicleSpeed: " + data.Data.Speed));
+                //dev.SubscribeDataReceived<IOBDData>((sender, data) => Console.WriteLine($"PID {data.Data.PID.ToHexString()}: {data.Data}"));
 
                 dev.Initialize();
-                dev.RequestData("1E2C");
-                dev.RequestData<FuelType>();
+                Thread.Sleep(500);
 
-                for (int i = 0; i < 5; i++)
+
+                dev.SendATCommand("AT SP7");  // Set protokoll to 7 - ISO 15765-4 CAN (29 bit ID, 500 kbaud)
+                dev.SendATCommand("AT BI");  // Bypass the initialization sequence to make sure it stays at protokoll 7  //     dev.SendATCommand("AT CAF0"); // Turns off CAN automatic formating so that PCI bytes are not inserted in the messages, or expected in the response
+                                             //  dev.SendATCommand( "AT L0");// Linefeeds off
+                dev.SendATCommand("AT DP");  // xxxxxxxxx
+                dev.SendATCommand("AT ST16");
+                dev.SendATCommand("atcp17");
+                Thread.Sleep(200);
+                dev.SendATCommand("ATSH17FC007B");
+                Thread.Sleep(200);
+                dev.SendATCommand("atcra17fe007b");
+
+                for (int i = 0; i < 100; i++)
                 {
-                    dev.RequestData<EngineRPM>();
-                    dev.RequestData<VehicleSpeed>();
                     Thread.Sleep(1000);
+                    var data =  dev.RequestDataAsync("1802").Result;
+                  
+                    //dev.RequestData("1801"); //benutzt den 0x22 ReadByIdentifier
+                    
                 }
+                Console.ReadLine();
             }
-            Console.ReadLine();
+
+      
+      
 
             //Async example
             //MainAsync(comPort).Wait();
@@ -49,11 +63,8 @@ namespace OBD.NET.ConsoleClient
             //Console.ReadLine();
         }
 
-        /// <summary>
-        /// Async example using new RequestDataAsync
-        /// </summary>
-        /// <param name="comPort">The COM port.</param>
-        /// <returns></returns>
+    
+      
         public static async Task MainAsync(string comPort)
         {
             using (SerialConnection connection = new SerialConnection(comPort))
