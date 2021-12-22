@@ -14,9 +14,9 @@ namespace OBD.NET.ConsoleClient
     {
         
 
-        public static async Task MainOld(string[] args)
+        public static async Task Main(string[] args)
         {
-            string comPort = "COM6";
+            string comPort = "COM9";
 
             using (SerialConnection connection = new SerialConnection(comPort))
 

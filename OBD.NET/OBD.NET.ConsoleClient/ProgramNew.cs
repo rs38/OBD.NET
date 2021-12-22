@@ -14,9 +14,7 @@ namespace OBD.NET.ConsoleClient
 {
     public class ProgramNew
     {
-
-
-		public static void Main(string[] args)
+		public static void Mainx(string[] args)
 		{
 
 

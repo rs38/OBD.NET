@@ -17,7 +17,7 @@ namespace OBD.NET.Common.Logging
         public void WriteLine(string text, OBDLogLevel level)
         {
             if (LogLevel == OBDLogLevel.None) return;
-
+           
             if(LogLevel == OBDLogLevel.Data)
                 if (text.Substring(0,2)=="22" | text.Substring(0, 2) == "62")
                 {
